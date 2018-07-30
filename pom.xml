@@ -23,7 +23,7 @@
 
     <groupId>com.github.drtrang</groupId>
     <artifactId>dependencies2</artifactId>
-    <version>1.3.0</version>
+    <version>1.3.1</version>
     <packaging>pom</packaging>
 
     <name>dependencies</name>
@@ -99,6 +99,7 @@
         <curator.version>4.0.1</curator.version>
         <druid.version>1.1.10</druid.version>
         <easypoi.version>3.2.0</easypoi.version>
+        <eclipse-collections.version>9.2.0</eclipse-collections.version>
         <fastutil.version>8.2.1</fastutil.version>
         <fluent-validator.version>1.0.9</fluent-validator.version>
         <fst.version>2.57</fst.version>
@@ -116,7 +117,7 @@
         <mapper-module.version>1.0.4</mapper-module.version>
         <mapper-weekend.version>1.1.4</mapper-weekend.version>
         <mapper-spring-boot-starter.version>2.0.3</mapper-spring-boot-starter.version>
-        <mockito.version>2.19.1</mockito.version>
+        <mockito.version>2.20.1</mockito.version>
         <mybatis-dynamic-sql.version>1.1.0</mybatis-dynamic-sql.version>
         <mybatis-generator.version>1.3.7</mybatis-generator.version>
         <mybatis-spring-boot-starter.version>1.3.2</mybatis-spring-boot-starter.version>
@@ -138,7 +139,7 @@
         <streamex.version>0.6.7</streamex.version>
         <strman.version>0.4.0</strman.version>
         <swagger2.version>2.9.2</swagger2.version>
-        <tablesaw.version>0.23.3</tablesaw.version>
+        <tablesaw.version>0.24.3</tablesaw.version>
         <testng.version>6.14.3</testng.version>
         <thumbnailator.version>0.4.8</thumbnailator.version>
         <trove4j.version>3.0.3</trove4j.version>
@@ -162,12 +163,14 @@
         <commons-pool2.version>2.6.0</commons-pool2.version>
         <hibernate-validator.version>6.0.11.Final</hibernate-validator.version>
         <hikaricp.version>3.2.0</hikaricp.version>
+        <httpasyncclient.version>4.1.4</httpasyncclient.version>
         <httpclient.version>4.5.6</httpclient.version>
         <httpcore.version>4.4.10</httpcore.version>
         <javax-transaction.version>1.3</javax-transaction.version>
         <kotlin.version>1.2.51</kotlin.version>
-        <lombok.version>1.18.0</lombok.version>
-        <netty.version>4.1.27.Final</netty.version>
+        <lombok.version>1.18.2</lombok.version>
+        <netty.version>4.1.28.Final</netty.version>
+        <rxjava2.version>2.1.17</rxjava2.version>
         <!-- Maven 插件 -->
         <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
         <buildnumber-maven-plugin.version>1.4</buildnumber-maven-plugin.version>
@@ -257,14 +260,15 @@
                 <scope>runtime</scope>
             </dependency>
             <!-- sharding-sphere 数据库分片中间件 -->
+            <!-- 引入后会导致 spring-test 和 spring-context-support 版本号错误，暂时注释掉 -->
             <!-- https://github.com/sharding-sphere/sharding-sphere -->
-            <dependency>
-                <groupId>io.shardingsphere</groupId>
-                <artifactId>sharding-sphere</artifactId>
-                <version>${sharding-sphere.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>io.shardingsphere</groupId>-->
+                <!--<artifactId>sharding-sphere</artifactId>-->
+                <!--<version>${sharding-sphere.version}</version>-->
+                <!--<type>pom</type>-->
+                <!--<scope>import</scope>-->
+            <!--</dependency>-->
             <!-- mybatis orm 框架 -->
             <!-- https://github.com/mybatis/mybatis-3 -->
             <dependency>
@@ -721,6 +725,28 @@
                 <artifactId>hppc</artifactId>
                 <version>${hppc.version}</version>
             </dependency>
+            <!-- https://github.com/eclipse/eclipse-collections -->
+            <dependency>
+                <groupId>org.eclipse.collections</groupId>
+                <artifactId>eclipse-collections-api</artifactId>
+                <version>${eclipse-collections.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.collections</groupId>
+                <artifactId>eclipse-collections</artifactId>
+                <version>${eclipse-collections.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.collections</groupId>
+                <artifactId>eclipse-collections-testutils</artifactId>
+                <version>${eclipse-collections.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.collections</groupId>
+                <artifactId>eclipse-collections-forkjoin</artifactId>
+                <version>${eclipse-collections.version}</version>
+            </dependency>
             <!-- https://pcollections.org -->
             <dependency>
                 <groupId>org.pcollections</groupId>
@@ -941,6 +967,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <version>${maven-gpg-plugin.version}</version>
+                        <inherited>false</inherited>
                         <executions>
                             <execution>
                                 <phase>verify</phase>
@@ -954,6 +981,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-release-plugin</artifactId>
                         <version>${maven-release-plugin.version}</version>
+                        <inherited>false</inherited>
                         <configuration>
                             <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
                             <autoVersionSubmodules>true</autoVersionSubmodules>
@@ -966,6 +994,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-deploy-plugin</artifactId>
                         <version>${maven-deploy-plugin.version}</version>
+                        <inherited>false</inherited>
                         <configuration>
                             <updateReleaseInfo>true</updateReleaseInfo>
                         </configuration>
@@ -978,16 +1007,68 @@
     <build>
         <defaultGoal>install</defaultGoal>
         <finalName>${project.artifactId}-${project.version}</finalName>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${maven-release-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-archetype-plugin</artifactId>
+                    <version>${maven-archetype-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>${maven-gpg-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-versions-plugin</artifactId>
+                    <version>${tycho-versions-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>${buildnumber-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.eluder.coveralls</groupId>
+                    <artifactId>coveralls-maven-plugin</artifactId>
+                    <version>${coveralls-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>cobertura-maven-plugin</artifactId>
+                    <version>${cobertura-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.mybatis.generator</groupId>
+                    <artifactId>mybatis-generator-maven-plugin</artifactId>
+                    <version>${mybatis-generator.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <!-- plugins 中声明的所有插件都不是可继承的，只适用于本工程 -->
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>${versions-maven-plugin.version}</version>
+                <inherited>false</inherited>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>${maven-dependency-plugin.version}</version>
+                <inherited>false</inherited>
                 <configuration>
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
@@ -998,6 +1079,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>${maven-clean-plugin.version}</version>
+                <inherited>false</inherited>
                 <!-- 每次构建项目时自动清理 -->
                 <executions>
                     <execution>
@@ -1013,6 +1095,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>${maven-resources-plugin.version}</version>
+                <inherited>false</inherited>
                 <configuration>
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <includeEmptyDirs>true</includeEmptyDirs>
@@ -1023,6 +1106,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
+                <inherited>false</inherited>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
